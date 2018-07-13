@@ -1,0 +1,24 @@
+apply from: "../gradle/dependencies.gradle"
+apply plugin: 'org.springframework.boot'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':teachernetwork-core')
+    compile (libs.groovy)
+    compile (libs.springBootParent)
+    compile (libs.springBootStarterDataMongodb)
+    compile (libs.springBootStarterWeb)
+    compile (libs.springBootStarter)
+
+    testCompile (libs.junit)
+}
+
+springBoot {
+    executable = true
+}
+
+mainClassName = 'com.beyondclass.common.teachernetwork.TeacherNetworkApplication'

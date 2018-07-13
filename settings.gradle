@@ -1,0 +1,5 @@
+rootProject.name = 'teachernetwork'
+include 'teachernetwork-api'
+include 'teachernetwork-core'
+include 'teachernetwork-web'
+
