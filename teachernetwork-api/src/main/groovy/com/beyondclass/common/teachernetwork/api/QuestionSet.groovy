@@ -19,7 +19,7 @@ class QuestionSet {
     @JsonProperty
     String questionsetdescription
     @JsonProperty
-    ArrayList<ObjectId> questionids
+    ArrayList<String> questionids
     @JsonProperty
     @Transient
     List<SingleQuestion> questionslist

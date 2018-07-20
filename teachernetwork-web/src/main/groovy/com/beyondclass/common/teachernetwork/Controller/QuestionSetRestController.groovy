@@ -67,7 +67,8 @@ class QuestionSetRestController {
 
     @PostMapping(value="/teachersnetwork/addquestionset/addquestions/savequestionset")
     public QuestionSet AddQuestionSetWithQuestions(@RequestBody QuestionSet questionSet)
-    {   List<ObjectId> ids=new ArrayList<ObjectId>()
+    {
+        List<String> ids=new ArrayList<String>()
         for(int i=0;i<questionSet.questionslist.size();i++){
 
           SingleQuestion sq=networkQuestionService.AddQuestion(questionSet.questionslist[i])
@@ -82,7 +83,22 @@ class QuestionSetRestController {
        questionSetRepository.save(questionSet)
 
     }
+    @PostMapping(value="/teachersnetwork/viewquestionsets/viewfullquestions")
+    public QuestionSet ViewFullQuestions(@RequestBody QuestionSet questionSet){
 
+        println("Entered here ")
+        List<SingleQuestion> singlequestions=new ArrayList<SingleQuestion>()
+        for(int i=0;i<questionSet.questionids.size();i++)
+        {   questionSet.questionids;
+
+            singlequestions.add(networkQuestionService.GetQuestion(questionSet.questionids[i]))
+            println(questionSet.questionids[i])
+
+        }
+        questionSet.questionslist=singlequestions
+        questionSet
+
+    }
 
 
 }
