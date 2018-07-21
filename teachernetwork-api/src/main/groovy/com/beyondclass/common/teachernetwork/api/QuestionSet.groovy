@@ -5,38 +5,43 @@ import com.beyondclass.common.teachernetwork.api.Constants.QuestionSetType
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
-import org.springframework.data.annotation.Transient
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "networkquestionset")
 @ToString
 @EqualsAndHashCode
 class QuestionSet {
+
     @Id
     String id;
+
     @JsonProperty
-    String questionsetdescription
+    String questionSetDescription
+
     @JsonProperty
-    ArrayList<String> questionids
-    @JsonProperty
-    @Transient
-    List<SingleQuestion> questionslist
+    List<Question> questionsList
+
     @JsonProperty
     DifficultyLevel difficultyLevel
+
     @JsonProperty
     QuestionSetType questionSetType
-    Date createdAt = new Date();
-    @JsonProperty
-    String email
-    @JsonProperty
-    String organizationname
-    //definition for questions network post attributes
-    @JsonProperty
-     List<String> LikedBy
-    @JsonProperty
-    List<Comment> Comments
 
+    Date createdAt = new Date()
+
+    @JsonProperty
+    @Indexed
+    String email
+
+    @JsonProperty
+    String organizationName
+
+    @JsonProperty
+     List<String> likedBy
+
+    @JsonProperty
+    List<Comment> comments
 
 }

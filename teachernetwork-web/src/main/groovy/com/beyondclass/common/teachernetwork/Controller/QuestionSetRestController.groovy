@@ -1,12 +1,14 @@
 package com.beyondclass.common.teachernetwork.Controller
 
 import com.beyondclass.common.teachernetwork.Repositories.QuestionSetRepository
-import com.beyondclass.common.teachernetwork.Service.NetworkQuestionService
+import com.beyondclass.common.teachernetwork.Service.CreateAssignmentToQuestionSetConverter
 import com.beyondclass.common.teachernetwork.Service.QuestionSetService
 import com.beyondclass.common.teachernetwork.api.Comment
 import com.beyondclass.common.teachernetwork.api.QuestionSet
-import com.beyondclass.common.teachernetwork.api.SingleQuestion
-import org.bson.types.ObjectId
+import com.beyondclass.common.teachernetwork.api.Question
+import com.beyondclass.common.teachernetwork.api.converters.CreateAssignment
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,90 +17,72 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class QuestionSetRestController {
+
     @Autowired
     QuestionSetService questionSetService
-    @Autowired
-    NetworkQuestionService networkQuestionService
+
     @Autowired
     QuestionSetRepository questionSetRepository
-    @GetMapping(value="/teachersnetwork/addquestionset")
-    public ResponseEntity<?> AddQuestionSet(@RequestParam String questionsetdesc){
-        QuestionSet questionSet=new QuestionSet()
-        questionSet.questionsetdescription=questionsetdesc
-        List<String> Ids=new ArrayList<String>()
-        Ids.add("5b4b81f664f12a1ed4e98b8f")
-        Ids.add("5b4b609c64f12a452cc66009")
-       questionSet.questionids=Ids
-      questionSet=questionSetService.AddQuestionSet(questionSet)
+
+    @Autowired
+    CreateAssignmentToQuestionSetConverter createAssignmentToQuestionSetConverter
+
+
+    Logger log = LoggerFactory.getLogger(QuestionSetRestController.class)
+
+    @GetMapping(value="/addquestionset")
+    ResponseEntity<?> AddQuestionSet(@RequestParam String questionsetdesc){
+        QuestionSet questionSet = new QuestionSet()
+        questionSet.questionSetDescription = questionsetdesc
+        questionSet = questionSetService.insertQuestionSet(questionSet)
         questionSet?new ResponseEntity<>('Successful',HttpStatus.OK):new ResponseEntity<>(body:'Something went wrong',HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    @GetMapping(value="/teachersnetwork/viewquestionsets")
+    @ResponseBody
+    @GetMapping(value="/viewquestionsets")
+    ResponseEntity<?> ViewQuestionSets( ){
 
-    public List<QuestionSet> ViewQuestionSets( ){
-       List<QuestionSet> questionsetlist=questionSetRepository.findAll()
-        questionsetlist
+        log.info("<QuestionSetController> fetching all question sets")
+        List<QuestionSet> questionSetList = questionSetRepository.findAll()
+        questionSetList ? new ResponseEntity<>(questionSetList, HttpStatus.OK) : new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR)
 
     }
 
- @PostMapping(value="/teachersnetwork/viewquestionsets/{questionsetId:.+}/like")
-  public int UpdateLikedBy(@RequestBody String likedBy ,@PathVariable(value="questionsetId",required=true)String questionsetid)
+    @ResponseBody
+    @PostMapping(value="/viewquestionsets/{questionsetId:.+}/like")
+    ResponseEntity<?> UpdateLikedBy(@RequestBody String likedBy ,@PathVariable(value="questionsetId",required=true)String questionsetid)
     {
-        QuestionSet questionset= questionSetRepository.findById(questionsetid)
-        println(questionset.LikedBy)
-        questionset.LikedBy.contains(likedBy)==true?questionset.LikedBy.remove(likedBy):questionset.LikedBy.add(likedBy)
-        questionSetRepository.save(questionset)
-        questionset.LikedBy.size()
-    }
-    @PostMapping(value="/teachersnetwork/viewquestionsets/{questionsetId:.+}/comment")
-    public List<Comment> AddedComment(@RequestBody Comment comment ,@PathVariable(value="questionsetId",required=true)String questionsetid)
-    { println(questionsetid)
-        QuestionSet questionset= questionSetRepository.findById(questionsetid)
-          println(questionset.Comments+"Entered")
-        questionset.Comments.add(comment)
-        println("entered after adding comment"+comment)
-        questionSetRepository.save(questionset)
-        questionset.Comments
+        log.info("<QuestionSetController> liking/unliking question sets")
+        QuestionSet questionSet= questionSetRepository.findById(questionsetid)
+        questionSet.likedBy.contains(likedBy)?questionSet.likedBy.remove(likedBy):questionSet.likedBy.add(likedBy)
+        def newQuestionSet = questionSetRepository.save(questionSet)
+        newQuestionSet ? new ResponseEntity<>(newQuestionSet.likedBy.size(), HttpStatus.OK) : new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    @PostMapping(value="/teachersnetwork/addquestionset/addquestions/savequestionset")
-    public QuestionSet AddQuestionSetWithQuestions(@RequestBody QuestionSet questionSet)
+    @ResponseBody
+    @PostMapping(value="/viewquestionsets/{questionsetId:.+}/comment")
+    ResponseEntity<?> AddedComment(@RequestBody Comment comment ,@PathVariable(value="questionsetId",required=true)String questionsetid)
     {
-        List<String> ids=new ArrayList<String>()
-        for(int i=0;i<questionSet.questionslist.size();i++){
-
-          SingleQuestion sq=networkQuestionService.AddQuestion(questionSet.questionslist[i])
-          ids.push(sq.id)
-        }
-
-
-        questionSet.questionids=ids
-
-
-
-       questionSetRepository.save(questionSet)
-
-    }
-    @PostMapping(value="/teachersnetwork/viewquestionsets/viewfullquestions")
-    public QuestionSet ViewFullQuestions(@RequestBody QuestionSet questionSet){
-
-        println("Entered here ")
-        List<SingleQuestion> singlequestions=new ArrayList<SingleQuestion>()
-        for(int i=0;i<questionSet.questionids.size();i++)
-        {   questionSet.questionids;
-
-            singlequestions.add(networkQuestionService.GetQuestion(questionSet.questionids[i]))
-            println(questionSet.questionids[i])
-
-        }
-        questionSet.questionslist=singlequestions
-        questionSet
-
+        log.info("<QuestionSetController> adding a comment to question set")
+        QuestionSet questionset= questionSetRepository.findById(questionsetid)
+        questionset.comments.add(comment)
+        def newQuestionSet = questionSetRepository.save(questionset)
+        newQuestionSet ? new ResponseEntity<>(newQuestionSet.comments, HttpStatus.OK) : new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-
+    @ResponseBody
+    @PostMapping(value="/savequestionset")
+    ResponseEntity<?> AddQuestionSetWithQuestions(@RequestBody CreateAssignment createAssignment)
+    {
+        log.info("<QuestionSetController> coverting createAssignment to QuestionSet ${createAssignment}")
+        QuestionSet questionSet = createAssignmentToQuestionSetConverter.convertToQuestionSetConverter(createAssignment)
+        log.info("<QuestionSetController> saving question set to Db")
+        def inserted = questionSetRepository.save(questionSet)
+        inserted ? new ResponseEntity<>(inserted, HttpStatus.OK) : new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
+    }
 }
