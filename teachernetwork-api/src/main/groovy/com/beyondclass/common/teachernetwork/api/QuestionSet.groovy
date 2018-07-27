@@ -2,6 +2,7 @@ package com.beyondclass.common.teachernetwork.api
 
 import com.beyondclass.common.teachernetwork.api.Constants.DifficultyLevel
 import com.beyondclass.common.teachernetwork.api.Constants.QuestionSetType
+import com.beyondclass.common.teachernetwork.api.converters.AssignmentType
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
@@ -39,9 +40,15 @@ class QuestionSet {
     String organizationName
 
     @JsonProperty
-     List<String> likedBy
+     List<String> likedBy = new ArrayList<String>()
 
     @JsonProperty
-    List<Comment> comments
+    List<Comment> comments = new ArrayList<Comment>()
+
+    @JsonProperty
+    String secondaryId
+
+    @JsonProperty
+    AssignmentType previousAssignmentType
 
 }

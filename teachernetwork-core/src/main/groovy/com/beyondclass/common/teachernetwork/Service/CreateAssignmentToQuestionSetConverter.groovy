@@ -35,6 +35,8 @@ class CreateAssignmentToQuestionSetConverter {
             questionSetType = QuestionSetType.ASSIGNMENT
             createdAt = createAssignment.createDate
             email = createAssignment.email
+            secondaryId = createAssignment.assignmentid
+            previousAssignmentType = createAssignment.assignmentType
             //organizationName = getOrganizationName(createAssignment.email)
         }
 
@@ -70,7 +72,7 @@ class CreateAssignmentToQuestionSetConverter {
         questionOptions.eachWithIndex { desc, index ->
             Options option = new Options()
             option.optionDescription = desc
-            option.isCorrect = Boolean.valueOf(questionValidity[index].toString())
+            option.isCorrect = questionValidity.contains(index)
             options.add(option)
             }
 

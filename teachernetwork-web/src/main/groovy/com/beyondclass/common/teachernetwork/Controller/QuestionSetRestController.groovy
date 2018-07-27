@@ -49,7 +49,7 @@ class QuestionSetRestController {
 
         log.info("<QuestionSetController> fetching all question sets")
         List<QuestionSet> questionSetList = questionSetRepository.findAll()
-        questionSetList ? new ResponseEntity<>(questionSetList, HttpStatus.OK) : new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR)
+        questionSetList ? new ResponseEntity<>(questionSetList, HttpStatus.OK) : new ResponseEntity<>("Empty ",HttpStatus.NO_CONTENT)
 
     }
 
@@ -61,7 +61,7 @@ class QuestionSetRestController {
         QuestionSet questionSet= questionSetRepository.findById(questionsetid)
         questionSet.likedBy.contains(likedBy)?questionSet.likedBy.remove(likedBy):questionSet.likedBy.add(likedBy)
         def newQuestionSet = questionSetRepository.save(questionSet)
-        newQuestionSet ? new ResponseEntity<>(newQuestionSet.likedBy.size(), HttpStatus.OK) : new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
+        newQuestionSet ? new ResponseEntity<>(newQuestionSet.likedBy, HttpStatus.OK) : new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     @ResponseBody
