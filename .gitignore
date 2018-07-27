@@ -17,6 +17,10 @@
 *.iml
 *.ipr
 /out/
+build/
+teachernetwork-api/build/
+teachernetwork-core/build/
+teachernetwork-web/build/
 
 ### NetBeans ###
 /nbproject/private/
