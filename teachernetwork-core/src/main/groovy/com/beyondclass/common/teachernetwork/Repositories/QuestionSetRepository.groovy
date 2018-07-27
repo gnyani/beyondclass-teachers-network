@@ -7,4 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository
 interface QuestionSetRepository extends MongoRepository<QuestionSet,String> {
        QuestionSet findById(String id)
 
+        List<QuestionSet> findAllByOrderByCreatedAtDesc()
+
     }

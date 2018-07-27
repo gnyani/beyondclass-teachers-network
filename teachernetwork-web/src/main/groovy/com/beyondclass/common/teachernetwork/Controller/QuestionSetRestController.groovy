@@ -5,7 +5,6 @@ import com.beyondclass.common.teachernetwork.Service.CreateAssignmentToQuestionS
 import com.beyondclass.common.teachernetwork.Service.QuestionSetService
 import com.beyondclass.common.teachernetwork.api.Comment
 import com.beyondclass.common.teachernetwork.api.QuestionSet
-import com.beyondclass.common.teachernetwork.api.Question
 import com.beyondclass.common.teachernetwork.api.converters.CreateAssignment
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -48,7 +47,7 @@ class QuestionSetRestController {
     ResponseEntity<?> ViewQuestionSets( ){
 
         log.info("<QuestionSetController> fetching all question sets")
-        List<QuestionSet> questionSetList = questionSetRepository.findAll()
+        List<QuestionSet> questionSetList = questionSetRepository.findAllByOrderByCreatedAtDesc()
         questionSetList ? new ResponseEntity<>(questionSetList, HttpStatus.OK) : new ResponseEntity<>("Empty ",HttpStatus.NO_CONTENT)
 
     }
