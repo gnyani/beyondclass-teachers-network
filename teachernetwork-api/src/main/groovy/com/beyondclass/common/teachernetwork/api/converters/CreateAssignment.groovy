@@ -1,5 +1,6 @@
 package com.beyondclass.common.teachernetwork.api.converters
 
+import com.beyondclass.common.teachernetwork.api.converters.user.UserDetails
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
@@ -69,6 +70,8 @@ class CreateAssignment {
     @NotEmpty
     @NotNull
     int numberOfQuesPerStudent
+
+    UserDetails postedUser
 
     @JsonProperty
     List<String []> inputs

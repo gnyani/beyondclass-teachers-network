@@ -30,14 +30,14 @@ class CreateAssignmentToQuestionSetConverter {
         QuestionSet questionSet = new QuestionSet()
 
         questionSet.with {
+            postedUser = createAssignment ?. postedUser
             questionSetDescription = createAssignment.message
             questionsList = generateQuestionsList(createAssignment)
             questionSetType = QuestionSetType.ASSIGNMENT
             createdAt = createAssignment.createDate
             email = createAssignment.email
-            secondaryId = createAssignment.assignmentid
+            referenceAssignmentId = createAssignment.assignmentid
             previousAssignmentType = createAssignment.assignmentType
-            //organizationName = getOrganizationName(createAssignment.email)
         }
 
         questionSet
