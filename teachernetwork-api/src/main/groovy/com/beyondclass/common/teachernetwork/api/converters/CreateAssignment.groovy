@@ -71,7 +71,7 @@ class CreateAssignment {
     @NotNull
     int numberOfQuesPerStudent
 
-    UserDetails postedUser
+    Author author
 
     @JsonProperty
     List<String []> inputs

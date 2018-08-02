@@ -37,6 +37,8 @@ class QuestionSet {
     @Indexed
     String email
 
+    String subject
+
     UserDetails postedUser
 
     @JsonProperty

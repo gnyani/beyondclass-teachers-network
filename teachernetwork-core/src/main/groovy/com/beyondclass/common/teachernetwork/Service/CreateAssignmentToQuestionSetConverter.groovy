@@ -8,9 +8,6 @@ import com.beyondclass.common.teachernetwork.api.QuestionSet
 import com.beyondclass.common.teachernetwork.api.TestCases
 import com.beyondclass.common.teachernetwork.api.converters.AssignmentType
 import com.beyondclass.common.teachernetwork.api.converters.CreateAssignment
-import com.beyondclass.common.teachernetwork.api.converters.user.User
-import groovyx.net.http.HTTPBuilder
-import groovy.json.JsonSlurper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -30,12 +27,12 @@ class CreateAssignmentToQuestionSetConverter {
         QuestionSet questionSet = new QuestionSet()
 
         questionSet.with {
-            postedUser = createAssignment ?. postedUser
+            postedUser = createAssignment ?. author ?.realOwner
             questionSetDescription = createAssignment.message
             questionsList = generateQuestionsList(createAssignment)
             questionSetType = QuestionSetType.ASSIGNMENT
-            createdAt = createAssignment.createDate
             email = createAssignment.email
+            subject = createAssignment.subject
             referenceAssignmentId = createAssignment.assignmentid
             previousAssignmentType = createAssignment.assignmentType
         }
