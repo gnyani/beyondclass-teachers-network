@@ -41,9 +41,10 @@ class AssignmentRestController {
 
         logger.info("requesting the host ${hostName} for fetching the assignment")
 
-        if(questionSetId)
-        responseAssignment.author.questionSetReferenceId = questionSetId
-
+        if(questionSetId){
+            responseAssignment.author.questionSetReferenceId = questionSetId
+            responseAssignment.postedToNetwork = true
+        }
         responseAssignment.assignmentid ? new ResponseEntity<?>(responseAssignment,HttpStatus.OK) : new ResponseEntity<?>("not found",HttpStatus.NOT_FOUND)
     }
 }

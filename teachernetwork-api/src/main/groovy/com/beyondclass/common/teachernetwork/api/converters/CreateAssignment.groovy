@@ -90,4 +90,6 @@ class CreateAssignment {
     HashSet<String> submittedstudents
 
     HashMap<String,Date> submittedDates
+
+    Boolean postedToNetwork
 }
