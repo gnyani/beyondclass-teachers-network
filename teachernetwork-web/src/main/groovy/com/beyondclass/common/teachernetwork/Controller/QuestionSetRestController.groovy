@@ -6,6 +6,7 @@ import com.beyondclass.common.teachernetwork.Service.QuestionSetService
 import com.beyondclass.common.teachernetwork.api.Comment
 import com.beyondclass.common.teachernetwork.api.QuestionSet
 import com.beyondclass.common.teachernetwork.api.converters.CreateAssignment
+import com.beyondclass.common.teachernetwork.api.converters.user.UserDetails
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -88,6 +89,21 @@ class QuestionSetRestController {
         questionset.comments.add(comment)
         def newQuestionSet = questionSetRepository.save(questionset)
         newQuestionSet ? new ResponseEntity<>(newQuestionSet.comments, HttpStatus.OK) : new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/questionset/{questionsetid:.+}/adduser")
+    ResponseEntity <?> addUserToQuestionSet(@RequestBody UserDetails userDetails, @PathVariable(value="questionsetid",required=true)String questionsetid){
+
+        QuestionSet questionSet = questionSetRepository.findById(questionsetid)
+
+        Boolean status = questionSet.referenceAssignmentUsers.add(userDetails)
+
+        questionSetRepository.save(questionSet)
+
+        log.info("<addingUserToQuestionSet>  with questionSetId ${questionsetid} for ${userDetails}")
+
+        status ? new ResponseEntity<?>(status, HttpStatus.OK) : new ResponseEntity<?>(status, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     @ResponseBody
