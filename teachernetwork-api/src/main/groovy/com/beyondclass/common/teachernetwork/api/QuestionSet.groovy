@@ -53,6 +53,6 @@ class QuestionSet {
     @JsonProperty
     AssignmentType previousAssignmentType
 
-    List<UserDetails> referenceAssignmentUsers = new ArrayList<UserDetails>()
+    HashSet<UserDetails> referenceAssignmentUsers = new HashSet<UserDetails>()
 
 }

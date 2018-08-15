@@ -92,6 +92,15 @@ class QuestionSetRestController {
     }
 
     @ResponseBody
+    @GetMapping(value="/pulled/teachers/list")
+    ResponseEntity<?> getPulledUsers(@RequestParam(value="questionsetid",required=true)String questionsetid)
+    {
+        log.info("<QuestionSetController> retrieving pulled users of a question set")
+        QuestionSet questionset= questionSetRepository.findById(questionsetid)
+        questionset ? new ResponseEntity<>(questionset.referenceAssignmentUsers, HttpStatus.OK) : new ResponseEntity<>("Something went wrong",HttpStatus.NO_CONTENT)
+    }
+
+    @ResponseBody
     @PostMapping(value = "/questionset/{questionsetid:.+}/adduser")
     ResponseEntity <?> addUserToQuestionSet(@RequestBody UserDetails userDetails, @PathVariable(value="questionsetid",required=true)String questionsetid){
 
