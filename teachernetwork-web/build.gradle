@@ -13,6 +13,7 @@ dependencies {
     compile (libs.springBootStarterDataMongodb)
     compile (libs.springBootStarterWeb)
     compile (libs.springBootStarter)
+    compile(libs.gpars)
 
     testCompile (libs.junit)
 }

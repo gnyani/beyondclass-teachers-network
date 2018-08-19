@@ -10,6 +10,7 @@ dependencies {
         compile(libs.springBootStarterDataMongodb)
         compile(libs.springBootStarterTest)
         compile(libs.springBootParent)
+        compile(libs.sendGrid)
         compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
         testCompile (libs.junit)
 }

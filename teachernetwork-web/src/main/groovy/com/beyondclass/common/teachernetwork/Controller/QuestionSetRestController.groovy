@@ -1,7 +1,10 @@
 package com.beyondclass.common.teachernetwork.Controller
 
+import com.beyondclass.common.teachernetwork.Constants.EmailTypes
 import com.beyondclass.common.teachernetwork.Repositories.QuestionSetRepository
 import com.beyondclass.common.teachernetwork.Service.CreateAssignmentToQuestionSetConverter
+import com.beyondclass.common.teachernetwork.Service.EmailUtils
+import com.beyondclass.common.teachernetwork.Service.MailService
 import com.beyondclass.common.teachernetwork.Service.QuestionSetService
 import com.beyondclass.common.teachernetwork.api.Comment
 import com.beyondclass.common.teachernetwork.api.QuestionSet
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import static groovyx.gpars.dataflow.Dataflow.task
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -29,6 +33,12 @@ class QuestionSetRestController {
 
     @Autowired
     QuestionSetService questionSetService
+
+    @Autowired
+    EmailUtils emailUtils
+
+    @Autowired
+    MailService emailService
 
     @Autowired
     QuestionSetRepository questionSetRepository
@@ -112,6 +122,8 @@ class QuestionSetRestController {
 
         log.info("<addingUserToQuestionSet>  with questionSetId ${questionsetid} for ${userDetails}")
 
+        sendEmail(questionSet.postedUser.email,userDetails)
+
         status ? new ResponseEntity<?>(status, HttpStatus.OK) : new ResponseEntity<?>(status, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
@@ -124,5 +136,15 @@ class QuestionSetRestController {
         log.info("<QuestionSetController> saving question set to Db")
         def inserted = questionSetRepository.save(questionSet)
         inserted ? new ResponseEntity<>(inserted, HttpStatus.OK) : new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    void sendEmail(String owner, UserDetails userDetails){
+        task{
+            String[] emailList = [owner]
+            def htmlMessage = emailUtils.createEmailMessage(EmailTypes.PULL_NOTIFICATION, userDetails.email, userDetails.college)
+            def htmlSubject = emailUtils.createSubject(EmailTypes.PULL_NOTIFICATION)
+            log.info("Sending pull email task to ${owner} done")
+            emailService.sendHtmlMail(emailList, htmlSubject, htmlMessage)
+        }
     }
 }

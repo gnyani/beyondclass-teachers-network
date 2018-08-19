@@ -6,6 +6,8 @@ versions += [
         springBootVersion        : "1.5.3.RELEASE",
         springDataVersion        : "1.11.0.RELEASE",
         groovy                   : "2.4.7",
+        sendGrid                 : "2.2.2",
+        gpars                    : "1.2.1",
         junit                    : "4.11",
 
 ]
@@ -30,6 +32,8 @@ libs+=[
         validationApi               : [group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'],
 //        slf4j                       : [group: 'org.slf4j', name: 'slf4j-api', version: '1.6.1'],
         jbossLogging                : [group: 'org.jboss.logging', name: 'jboss-logging', version: '3.1.0.CR2'],
+        sendGrid                    : [group: 'com.sendgrid', name: 'sendgrid-java', version: "${versions.sendGrid}"],
+        gpars                       : [group: 'org.codehaus.gpars', name: 'gpars', version: "${versions.gpars}"],
         jackson                     : [group:'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'],
         jsr311                      : [group: 'javax.ws.rs', name: 'jsr311-api', version: '0.11'],
 
